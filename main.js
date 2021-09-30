@@ -2,8 +2,38 @@ import fetch from "node-fetch";
 import hjson from "hjson";
 import fs from "fs";
 
-const instances = JSON.parse(fs.readFileSync("./instances.json", "utf-8"));
 let polling_interval = 15; // seconds
+let instances;
+try {
+   let instances_string = fs.readFileSync("./instances.json", "utf-8");
+   try {
+      instances = JSON.parse(instances_string);
+   }catch(e) {
+      console.log("Failed to parse json data from instances.json.");
+      console.log(e);
+      process.exit();
+   }
+}catch(e) {
+   console.log("instances.json could not be found.");
+   process.exit();
+}
+
+async function TestInstance(instance) {
+   let config_exists = fs.existsSync(instance.config);
+   if (!config_exists) return "no_config";
+
+   try {
+      let req = await fetch(`http://127.0.0.1:${instance.port}/api/v1/status`, {
+         headers: {
+            "Authorization": `Basic ${Buffer.from(instance.user + ":" + instance.pass).toString("base64")}`
+         }
+      });
+      if (req.status === 200) return "api_ok";
+      if (req.status === 401) return "auth_fail";
+   }catch(e) {
+      return "api_refused";
+   }
+}
 
 async function GetDelistTokens() {
    let tokens = [];
@@ -22,7 +52,10 @@ async function GetDelistTokens() {
             }
          }
       }
-   }catch(e) {}
+   }catch(e) {
+      console.log("Failed to get article list.");
+      console.log(e);
+   }
    return tokens;
 }
 
@@ -35,21 +68,30 @@ async function GetBlacklist(port, user, pass) {
          }
       });
       blacklist = (await req.json()).blacklist;
-   }catch(e) {}
+   }catch(e) {
+      console.log(`Failed to get blacklist for instance on port ${port}.`);
+      console.log(e);
+   }
    return blacklist;
 }
 
 async function BlacklistPair(port, user, pass, config_location, pair) {
    console.log(`Blacklisting ${pair} for instance on port ${port}`);
-   fetch(`http://127.0.0.1:${port}/api/v1/blacklist`, {
-      method: "POST",
-      headers: {
-         "Content-Type": "application/json",
-         "Authorization": `Basic ${Buffer.from(user + ":" + pass).toString("base64")}`
-      },
-      body: JSON.stringify({blacklist: [pair]})
-   });
+   try{
+      fetch(`http://127.0.0.1:${port}/api/v1/blacklist`, {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Basic ${Buffer.from(user + ":" + pass).toString("base64")}`
+         },
+         body: JSON.stringify({blacklist: [pair]})
+      });
+   }catch(e) {
+      console.log(`Failed to blacklist ${pair} for instance on port ${port}.`);
+      console.log(e);
+   }
 
+   console.log(`Blacklisting ${pair} in config ${config_location}.`);
    let config = hjson.parse(fs.readFileSync(config_location, "utf-8"), {keepWsc: true});
    if (!config.exchange.pair_blacklist.includes(pair)) {
       config.exchange.pair_blacklist.push(pair);
@@ -75,5 +117,23 @@ async function Loop() {
    }
 }
 
-Loop();
-setInterval(Loop, polling_interval * 1000);
+(async () => {
+   for (let i = 0; i < instances.length; i++) {
+      let test_result = await TestInstance(instances[i]);
+      if (test_result === "auth_fail") {
+         console.log(`Instance at port ${instances[i].port} failed authentication. Check if the username and password is correct.`);
+         process.exit();
+      }
+      if (test_result === "api_refused") {
+         console.log(`Instance at port ${instances[i].port} could not connect. Is the bot running?`);
+         process.exit();
+      }
+      if (test_result === "no_config") {
+         console.log(`Config at ${instances[i].config} could not be found.`);
+         process.exit();
+      }
+      console.log(`Config file at ${instances[i].config} and connection to instance on port ${instances[i].port} looks OK!`);
+   }
+   Loop();
+   setInterval(Loop, polling_interval * 1000);
+})();
