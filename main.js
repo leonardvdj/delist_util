@@ -60,7 +60,7 @@ async function GetDelistTokens() {
 }
 
 async function GetBlacklist(port, user, pass) {
-   let blacklist = [];
+   let blacklist;
    try {
       let req = await fetch(`http://127.0.0.1:${port}/api/v1/blacklist`, {
          headers: {
@@ -105,6 +105,7 @@ async function Loop() {
    let tokens = await GetDelistTokens();
    for (let i = 0; i < instances.length; i++) {
       let blacklist = await GetBlacklist(instances[i].port, instances[i].user, instances[i].pass);
+      if (!blacklist) continue;
       let tokens_not_blacklisted = tokens.filter(token => !blacklist.map(bl_pair => bl_pair.split("/")[0].toUpperCase()).includes(token));
       for (let j = 0; j < tokens_not_blacklisted.length; j++) {
          await BlacklistPair(instances[i].port, instances[i].user, instances[i].pass, instances[i].config, `${tokens_not_blacklisted[j]}/.*`);
