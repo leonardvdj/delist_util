@@ -1,0 +1,20 @@
+[
+   {
+      "port": 8080,
+      "user": "",
+      "pass": "",
+      "config": "/home/leonardvdj/freqtrade/user_data/config.json"
+   },
+   {
+      "port": 8081,
+      "user": "",
+      "pass": "",
+      "config": "/home/leonardvdj/freqtrade/user_data/config_busd.json"
+   },
+   {
+      "port": 8082,
+      "user": "",
+      "pass": "",
+      "config": "/home/leonardvdj/freqtrade/user_data/config.json"
+   }
+]

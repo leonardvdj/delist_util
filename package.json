@@ -1,0 +1,11 @@
+{
+  "name": "delist_util",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "dependencies": {
+    "hjson": "^3.2.2",
+    "node-fetch": "^2.6.5"
+  }
+}
