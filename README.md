@@ -3,7 +3,7 @@ This is a small utility that polls binance news for any delisted pairs every 15 
 
 ### Requirements
 * One or more [freqtrade](https://github.com/freqtrade/freqtrade) bots with the api server enabled.
-* [Nodejs](https://nodejs.org/)
+* [Nodejs](https://nodejs.org/) v15.3.0 and up.
 
 ### Disclaimer
 For now, there are no special checks for whether the `instances.json` file is properly formatted, whether the auth information is correct, nor whether the config path is correct. So if you have any trouble, triple-check that all the information is correct.
