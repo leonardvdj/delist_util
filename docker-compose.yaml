@@ -12,7 +12,8 @@ services:
       # Map your local config to a new file in the container and use in instances.json
       - /opt/appdata/freqtrade/user_data_infinity/config.json:/app/configs/usdt.json
       - /opt/appdata/freqtrade/user_data_infinity_busd/config.json:/app/configs/busd.json
-      - "./instances.json:/app/instances.json"
+      # Map the instances.json file with your configuration
+      - /opt/appdata/freqtrade/delister-instances.json:/app/instances.json"
     networks: 
       freqtrade:
         ipv4_address: 172.31.0.101
