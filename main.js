@@ -23,7 +23,7 @@ async function TestInstance(instance) {
    if (!config_exists) return "no_config";
 
    try {
-      let req = await fetch(`http://127.0.0.1:${instance.port}/api/v1/status`, {
+      let req = await fetch(`http://${instance.ip || "127.0.0.1"}:${instance.port}/api/v1/status`, {
          headers: {
             "Authorization": `Basic ${Buffer.from(instance.user + ":" + instance.pass).toString("base64")}`
          }
@@ -62,7 +62,7 @@ async function GetDelistTokens() {
 async function GetBlacklist(port, user, pass) {
    let blacklist;
    try {
-      let req = await fetch(`http://127.0.0.1:${port}/api/v1/blacklist`, {
+      let req = await fetch(`http://${instance.ip || "127.0.0.1"}:${port}/api/v1/blacklist`, {
          headers: {
             "Authorization": `Basic ${Buffer.from(user + ":" + pass).toString("base64")}`
          }
@@ -78,7 +78,7 @@ async function GetBlacklist(port, user, pass) {
 async function BlacklistPair(port, user, pass, config_location, pair) {
    console.log(`Blacklisting ${pair} for instance on port ${port}`);
    try{
-      fetch(`http://127.0.0.1:${port}/api/v1/blacklist`, {
+      fetch(`http://${instance.ip || "127.0.0.1"}:${port}/api/v1/blacklist`, {
          method: "POST",
          headers: {
             "Content-Type": "application/json",
