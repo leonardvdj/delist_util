@@ -10,4 +10,4 @@ WORKDIR /app
 
 RUN npm install
 
-CMD [ "node", "." ] 
+CMD [ "node", "." ]
