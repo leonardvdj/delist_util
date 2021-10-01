@@ -14,7 +14,6 @@ This is a small utility that polls binance news for any delisted pairs every 15 
 For each bot you have, add an object to the `instances.json` file with the following contents:
 ```javascript
 {
-    "ip": "127.0.0.1",                                          // Optional, when ommitted defaults to 127.0.0.1
     "port": 8080,                                               // Port of the api server
     "user": "myuser",                                           // Username of the api server
     "pass": "MySecretPassword",                                 // Password of the api server
