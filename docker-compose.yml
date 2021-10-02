@@ -1,0 +1,30 @@
+---
+version: "3"
+services:
+  delist_util:
+    restart: unless-stopped
+    container_name: delist_util
+    build: .
+    volumes:
+      # Required for the delister to work
+      - ./:/delist_util/
+      # Map your freqtrade directory
+      - /home/myuser/freqtrade/:/freqtrade/
+    networks:
+      freqtrade:
+        ipv4_address: 172.31.0.50
+
+networks:
+  freqtrade:
+    external: true
+
+# Freqtrade docker-compose.yml changes:
+# Add this to the bottom of the file
+# networks:
+#   freqtrade:
+#     name: freqtrade
+#     driver: bridge
+#     ipam:
+#      config:
+#        - subnet: 172.31.0.0/16
+#          gateway: 172.31.0.1
