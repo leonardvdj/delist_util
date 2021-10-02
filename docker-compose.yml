@@ -17,14 +17,3 @@ services:
 networks:
   freqtrade:
     external: true
-
-# Freqtrade docker-compose.yml changes:
-# Add this to the bottom of the file
-# networks:
-#   freqtrade:
-#     name: freqtrade
-#     driver: bridge
-#     ipam:
-#      config:
-#        - subnet: 172.31.0.0/16
-#          gateway: 172.31.0.1
