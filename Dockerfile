@@ -1,6 +1,5 @@
 FROM node:14-alpine
-WORKDIR /usr/src/app
+WORKDIR /delist_util/
 COPY . .
 RUN yarn install
-EXPOSE 8080
 CMD [ "node", "." ]
