@@ -1,0 +1,19 @@
+---
+version: "3"
+services:
+  delist_util:
+    restart: unless-stopped
+    container_name: delist_util
+    build: .
+    volumes:
+      # Required for the delister to work
+      - ./:/delist_util/
+      # Map your freqtrade directory
+      - /home/myuser/freqtrade/:/freqtrade/
+    networks:
+      freqtrade:
+        ipv4_address: 172.31.0.50
+
+networks:
+  freqtrade:
+    external: true
