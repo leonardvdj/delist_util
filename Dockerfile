@@ -1,13 +1,6 @@
-FROM alpine:latest
-
-RUN apk add --update npm
-
-RUN mkdir -p /app
-RUN mkdir -p /app/configs
-
-COPY . /app
-WORKDIR /app
-
-RUN npm install
-
+FROM node:14-alpine
+WORKDIR /usr/src/app
+COPY . .
+RUN yarn install
+EXPOSE 8080
 CMD [ "node", "." ]
