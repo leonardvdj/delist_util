@@ -7,7 +7,7 @@ services:
     build: .
     volumes:
       # Required for the delister to work
-      - ./:/delist_util/
+      - ./instances.json:/delist_util/instances.json
       # Map your freqtrade directory
       - /home/myuser/freqtrade/:/freqtrade/
     networks:
