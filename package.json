@@ -5,6 +5,7 @@
   "main": "main.js",
   "license": "MIT",
   "dependencies": {
+    "detect-indent": "^7.0.0",
     "hjson": "^3.2.2",
     "node-fetch": "^2.6.5"
   }

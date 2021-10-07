@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import hjson from "hjson";
 import fs from "fs";
+import detectIndent from "detect-indent";
 
 let polling_interval = 15; // seconds
 let instances;
@@ -92,10 +93,31 @@ async function BlacklistPair(instance, pair) {
    }
 
    console.log(`Blacklisting ${pair} in config ${instance.config}.`);
-   let config = hjson.parse(fs.readFileSync(instance.config, "utf-8"), {keepWsc: true});
-   if (!config.exchange.pair_blacklist.includes(pair)) {
-      config.exchange.pair_blacklist.push(pair);
-      fs.writeFileSync(instance.config, hjson.stringify(config, {keepWsc: true, bracesSameLine: true, quotes: "all", space: 4, separator: true}));
+   try {
+      let config_str = fs.readFileSync(instance.config, "utf-8");
+      try {
+         let config = hjson.parse(config_str, {keepWsc: true});
+         let indent = detectIndent(config_str).amount;
+         if (!config.exchange.pair_blacklist.includes(pair)) {
+            try {
+               config.exchange.pair_blacklist.push(pair);
+            }catch(e) {
+               console.log(`Failed to blacklist ${pair} in config file at ${instance.config}`);
+               console.log(e);
+            }
+            try {
+               fs.writeFileSync(instance.config, hjson.stringify(config, {keepWsc: true, bracesSameLine: true, quotes: "all", space: indent, separator: true}));
+            }catch(e) {
+               console.log(`Failed to save config file at ${instance.config}`);
+            }
+         }
+      }catch(e) {
+         console.log(`Failed to parse config file at ${instance.config}`);
+         console.log(e);
+      }
+   }catch(e) {
+      console.log(`Failed to load config file at ${instance.config}.`);
+      console.log(e);
    }
 }
 
