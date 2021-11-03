@@ -48,7 +48,7 @@ async function GetDelistTokens() {
             let article = catalog.articles[j];
             if (article.title.toLowerCase().includes("binance will delist")) {
                // console.log(`${catalog.catalogName}: ${article.title}`);
-               let article_tokens = article.title.toUpperCase().split("BINANCE WILL DELIST")[1].split(" ON ")[0].split("&").map(elem => elem.trim());
+               let article_tokens = article.title.toUpperCase().split("BINANCE WILL DELIST")[1].split(" ON ")[0].split(/,|&/).map(elem => elem.trim());
                tokens.push(...article_tokens);
             }
          }
